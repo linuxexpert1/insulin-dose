@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Insulin Dose Calculator for Rahim</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#1F7A6A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rahim Dose">
+<style>
+  :root {
+    --ink:#173B3A; --teal:#1F7A6A; --mist:#EEF4F2; --muted:#5F7472; --line:#C9D6D3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin:0; font-family:'Avenir Next','Segoe UI',system-ui,-apple-system,sans-serif;
+    color:var(--ink); background:#fff;
+  }
+  main {
+    max-width:480px; margin:0 auto;
+    padding: calc(20px + env(safe-area-inset-top)) 18px calc(32px + env(safe-area-inset-bottom));
+    display:flex; flex-direction:column; gap:18px;
+  }
+  header { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+  h1 { font-size:24px; line-height:1.15; font-weight:700; letter-spacing:-.3px; margin:0; }
+  .subtitle { font-size:13px; color:var(--muted); margin-top:2px; }
+  .pill {
+    font:inherit; font-size:14px; font-weight:600; color:var(--teal); background:var(--mist);
+    border:0; border-radius:999px; padding:8px 14px; cursor:pointer;
+  }
+  .text-btn { font:inherit; font-size:14px; font-weight:600; color:var(--teal); background:none; border:0; padding:4px 0; cursor:pointer; align-self:flex-start; }
+  .pill:focus-visible, .text-btn:focus-visible, .field:focus-visible { outline:2px solid var(--teal); outline-offset:2px; }
+
+  #settings { background:var(--mist); border-radius:14px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+  #settings[hidden] { display:none; }
+  .srow { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .srow label { font-size:14px; flex:1; }
+  .sfield { display:flex; align-items:center; gap:6px; }
+  .sfield span { font-size:12px; color:var(--muted); width:40px; }
+  .field {
+    width:84px; font:inherit; font-size:15px; padding:6px 8px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); text-align:right;
+  }
+  select.field { width:auto; text-align:left; }
+  .note { font-size:12px; color:var(--muted); margin:4px 0 0; line-height:1.4; }
+
+  .inputs { display:flex; flex-direction:column; gap:14px; }
+  .big { display:flex; flex-direction:column; gap:6px; }
+  .big label { font-size:15px; font-weight:600; }
+  .bigfield { display:flex; align-items:baseline; gap:10px; border-bottom:2px solid var(--ink); padding-bottom:4px; }
+  .bigfield input {
+    flex:1; min-width:0; border:0; outline:0; background:transparent; font:inherit;
+    font-size:40px; font-weight:700; color:var(--ink); padding:0; font-variant-numeric:tabular-nums;
+  }
+  .bigfield input::placeholder { color:#B9C7C4; font-weight:500; }
+  .bigfield input:focus-visible { box-shadow:0 3px 0 var(--teal); }
+  .bigfield span { font-size:15px; color:var(--muted); }
+
+  .result { background:var(--teal); color:#fff; border-radius:18px; padding:20px 20px 16px; }
+  .rlabel { font-size:14px; opacity:.85; }
+  .rnum { font-size:64px; font-weight:700; line-height:1.05; letter-spacing:-1.5px; margin-top:2px; font-variant-numeric:tabular-nums; }
+  .rnum small { font-size:20px; font-weight:500; letter-spacing:0; opacity:.9; }
+  .exact { font-size:13px; opacity:.85; margin-top:4px; min-height:1.2em; }
+  .banner { margin-top:14px; font-size:14px; font-weight:600; background:rgba(255,255,255,.18); border-radius:10px; padding:8px 12px; }
+  .banner:empty { display:none; }
+  .breakdown { margin-top:18px; border-top:1px solid rgba(255,255,255,.35); padding-top:12px; display:flex; flex-direction:column; gap:10px; }
+  .line { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+  .lname { font-size:14px; font-weight:600; }
+  .lmath { font-size:13px; opacity:.8; font-variant-numeric:tabular-nums; }
+  .lval { font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; }
+  footer { font-size:12px; color:var(--muted); line-height:1.45; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Insulin dose calculator<br>for Rahim</h1>
+      <div class="subtitle" id="subtitle"></div>
+    </div>
+    <button class="pill" id="toggleSettings" aria-expanded="false">Settings</button>
+  </header>
+
+  <section id="settings" hidden aria-label="Formula settings">
+    <div class="srow"><label for="target">Target blood sugar</label>
+      <div class="sfield"><input class="field" id="target" inputmode="decimal"><span>mg/dL</span></div></div>
+    <div class="srow"><label for="correctionFactor">Correction factor (divide by)</label>
+      <div class="sfield"><input class="field" id="correctionFactor" inputmode="decimal"><span></span></div></div>
+    <div class="srow"><label for="correctOver">Only correct if sugar is over</label>
+      <div class="sfield"><input class="field" id="correctOver" inputmode="decimal"><span>mg/dL</span></div></div>
+    <div class="srow"><label for="carbRatio">Carb ratio (grams per 1 unit)</label>
+      <div class="sfield"><input class="field" id="carbRatio" inputmode="decimal"><span>g</span></div></div>
+    <div class="srow"><label for="roundTo">Round final dose to</label>
+      <select class="field" id="roundTo">
+        <option value="0">No rounding</option>
+        <option value="0.5">Nearest ½ unit</option>
+        <option value="1">Nearest whole unit</option>
+      </select></div>
+    <p class="note">Match these to what your care team wrote. Ask them how they want fractions rounded — pens differ.</p>
+    <button class="text-btn" id="reset">Reset to whiteboard values</button>
+  </section>
+
+  <section class="inputs">
+    <div class="big"><label for="bg">Blood sugar</label>
+      <div class="bigfield"><input id="bg" inputmode="numeric" placeholder="175" autocomplete="off"><span>mg/dL</span></div></div>
+    <div class="big"><label for="carbs">Carbs eating</label>
+      <div class="bigfield"><input id="carbs" inputmode="decimal" placeholder="18" autocomplete="off"><span>grams</span></div></div>
+  </section>
+
+  <section class="result" aria-live="polite">
+    <div class="rlabel">Total dose</div>
+    <div class="rnum"><span id="total">—</span> <small>units</small></div>
+    <div class="exact" id="exact"></div>
+    <div class="banner" id="banner"></div>
+    <div class="breakdown">
+      <div class="line"><div><div class="lname">Correction</div><div class="lmath" id="corrMath">enter blood sugar</div></div><div class="lval" id="corrVal">—</div></div>
+      <div class="line"><div><div class="lname">Carbs</div><div class="lmath" id="carbMath">enter carbs</div></div><div class="lval" id="carbVal">—</div></div>
+    </div>
+  </section>
+
+  <footer>This just does the arithmetic on the formula your care team gave you. It isn't medical advice — if a number looks off, or sugar is very high or low, call the nurse before giving insulin.</footer>
+</main>
+
+<script>
+const DEFAULTS = { target:100, correctionFactor:45, correctOver:150, carbRatio:12, roundTo:0.5 };
+const KEY = "insulin-calc-settings";
+const $ = id => document.getElementById(id);
+
+let s = load();
+function load() {
+  try { return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || "{}") }; }
+  catch { return { ...DEFAULTS }; }
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(s)); }
+
+function fmt(n, d=1) {
+  if (!Number.isFinite(n)) return "—";
+  return (Math.round(n*100)/100).toFixed(d).replace(/\.0+$/,"").replace(/(\.\d)0$/,"$1");
+}
+function roundInc(v, inc) { return inc ? Math.round(v/inc)*inc : v; }
+
+function fillSettings() {
+  for (const k of ["target","correctionFactor","correctOver","carbRatio"]) $(k).value = s[k];
+  $("roundTo").value = String(s.roundTo);
+  $("subtitle").textContent = `Correction (${s.target} target, ÷${s.correctionFactor}) + carbs (1u : ${s.carbRatio}g)`;
+}
+
+function calc() {
+  const bgRaw = $("bg").value, carbRaw = $("carbs").value;
+  const bg = parseFloat(bgRaw), carbs = parseFloat(carbRaw);
+  const bgOk = Number.isFinite(bg), carbOk = Number.isFinite(carbs);
+
+  const applies = bgOk && bg > s.correctOver;
+  const corr = applies ? (bg - s.target) / s.correctionFactor : 0;
+  const carbDose = carbOk && s.carbRatio > 0 ? carbs / s.carbRatio : 0;
+  const total = corr + carbDose;
+  const rounded = roundInc(total, s.roundTo);
+
+  $("total").textContent = (bgOk || carbOk) ? fmt(rounded) : "—";
+  $("exact").textContent = (bgOk || carbOk) && s.roundTo > 0 && Math.abs(rounded-total) > 0.001
+    ? `exact ${fmt(total,2)} → rounded to nearest ${s.roundTo}` : "";
+
+  $("banner").textContent = !bgOk ? ""
+    : applies ? `Sugar ${bgRaw} is over ${s.correctOver} — correction + carbs`
+              : `Sugar ${bgRaw} is ${s.correctOver} or under — carbs only, no correction`;
+
+  $("corrMath").textContent = !bgOk ? "enter blood sugar"
+    : !applies ? `${bgRaw} is not over ${s.correctOver} — none`
+    : `(${bgRaw} − ${s.target}) ÷ ${s.correctionFactor}`;
+  $("corrVal").textContent = bgOk ? fmt(corr,2) : "—";
+  $("carbMath").textContent = carbOk ? `${carbRaw} ÷ ${s.carbRatio}` : "enter carbs";
+  $("carbVal").textContent = carbOk ? fmt(carbDose,2) : "—";
+}
+
+for (const id of ["bg","carbs"]) {
+  $(id).addEventListener("input", e => { e.target.value = e.target.value.replace(/[^\d.]/g,""); calc(); });
+}
+for (const k of ["target","correctionFactor","correctOver","carbRatio"]) {
+  $(k).addEventListener("input", e => { const n = parseFloat(e.target.value); s[k] = Number.isFinite(n) ? n : 0; save(); fillSettings(); calc(); });
+}
+$("roundTo").addEventListener("change", e => { s.roundTo = parseFloat(e.target.value); save(); calc(); });
+$("reset").addEventListener("click", () => { s = { ...DEFAULTS }; save(); fillSettings(); calc(); });
+$("toggleSettings").addEventListener("click", () => {
+  const el = $("settings"), open = el.hidden;
+  el.hidden = !open;
+  $("toggleSettings").textContent = open ? "Done" : "Settings";
+  $("toggleSettings").setAttribute("aria-expanded", String(open));
+});
+
+fillSettings(); calc();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
