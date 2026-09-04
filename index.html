@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Insulin Dose Calculator for Rahim</title>
+<title>Insulin Dose Calculator App</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-192.png">
 <meta name="theme-color" content="#1F7A6A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Rahim Dose">
+<meta name="apple-mobile-web-app-title" content="Insulin Dose">
 <style>
   :root {
     --ink:#173B3A; --teal:#1F7A6A; --mist:#EEF4F2; --muted:#5F7472; --line:#C9D6D3;
@@ -72,6 +72,10 @@
   .lname { font-size:14px; font-weight:600; }
   .lmath { font-size:13px; opacity:.8; font-variant-numeric:tabular-nums; }
   .lval { font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; }
+  .dedication { border-radius:16px; overflow:hidden; background:var(--mist); }
+  .dedication img { display:block; width:100%; aspect-ratio:1000/427; object-fit:cover; }
+  .dedication p { margin:0; padding:10px 14px 12px; font-size:13px; line-height:1.45; color:var(--muted); text-align:center; }
+  .dedication strong { color:var(--ink); }
   footer { font-size:12px; color:var(--muted); line-height:1.45; }
   .credit { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
   .credit a { color:var(--teal); text-decoration:none; font-weight:600; }
@@ -81,7 +85,7 @@
 <main>
   <header>
     <div>
-      <h1>Insulin dose calculator<br>for Rahim</h1>
+      <h1>Insulin dose calculator App</h1>
       <div class="subtitle" id="subtitle"></div>
     </div>
     <button class="pill" id="toggleSettings" aria-expanded="false">Settings</button>
@@ -106,6 +110,11 @@
     <button class="text-btn" id="reset">Reset to whiteboard values</button>
   </section>
 
+  <section class="dedication" aria-label="Dedication">
+    <img src="dedication.jpg" alt="Welcome sign at Children's Scottish Rite Hospital, Atlanta">
+    <p>Dedicated to the children, families, and care teams of<br><strong>Children’s Healthcare of Atlanta – Scottish Rite Hospital</strong></p>
+  </section>
+
   <section class="inputs">
     <div class="big"><label for="bg">Blood sugar</label>
       <div class="bigfield"><input id="bg" inputmode="numeric" placeholder="175" autocomplete="off"><span>mg/dL</span></div></div>
@@ -124,8 +133,8 @@
     </div>
   </section>
 
-  <footer>This just does the arithmetic on the formula your care team gave you. It isn't medical advice — if a number looks off, or sugar is very high or low, call the nurse before giving insulin.
-    <div class="credit">Developed by Abdihakim Hersi · <a href="https://linuxexpert1.github.io/insulin-dose/">linuxexpert1.github.io/insulin-dose</a><br>Email: <a href="mailto:linuxexpert1@gmail.com">linuxexpert1@gmail.com</a></div></footer>
+  <footer>This just does the arithmetic on the formula your care team gave you. It isn't medical advice — if a number looks off, or sugar is very high or low, call the nurse before giving insulin. This is an independent family project and is not affiliated with or endorsed by Children’s Healthcare of Atlanta.
+    <div class="credit">I dedicated this app to my son, Rahim Hersi.<br>Developed by Abdihakim Hersi · <a href="https://linuxexpert1.github.io/insulin-dose/">linuxexpert1.github.io/insulin-dose</a><br>Email: <a href="mailto:linuxexpert1@gmail.com">linuxexpert1@gmail.com</a></div></footer>
 </main>
 
 <script>

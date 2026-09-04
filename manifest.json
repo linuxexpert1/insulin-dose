@@ -1,6 +1,6 @@
 {
-  "name": "Insulin Dose Calculator for Rahim",
-  "short_name": "Rahim Dose",
+  "name": "Insulin Dose Calculator App",
+  "short_name": "Insulin Dose",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
