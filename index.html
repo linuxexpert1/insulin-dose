@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Insulin Dose Calculator App</title>
+<link rel="preload" href="nunito-sans-500.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -12,6 +13,12 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Insulin Dose">
 <style>
+  @font-face {
+    font-family:'Nunito Sans';
+    font-style:normal; font-weight:500; font-stretch:100%;
+    font-display:swap;
+    src:url('nunito-sans-500.woff2') format('woff2');
+  }
   :root {
     --ink:#173B3A; --teal:#1F7A6A; --mist:#EEF4F2; --muted:#5F7472; --line:#C9D6D3;
   }
@@ -73,7 +80,7 @@
   .lmath { font-size:13px; opacity:.8; font-variant-numeric:tabular-nums; }
   .lval { font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; }
   .dedication img { display:block; width:100%; aspect-ratio:1774/887; object-fit:cover; }
-  .dedication p { margin:0; padding:14px 14px 0; font-size:17px; font-weight:700; letter-spacing:-.2px; line-height:1.35; color:var(--ink); text-align:center; text-wrap:balance; }
+  .dedication p { margin:0; padding:14px 14px 0; font-family:'Nunito Sans','Avenir Next',system-ui,-apple-system,sans-serif; font-size:17px; font-weight:500; letter-spacing:-.1px; line-height:1.4; color:var(--ink); text-align:center; text-wrap:balance; }
   footer { font-size:12px; color:var(--muted); line-height:1.45; }
   .credit { margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:12px; color:var(--muted); }
   .credit a { color:var(--teal); text-decoration:none; font-weight:600; }

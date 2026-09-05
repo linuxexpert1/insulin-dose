@@ -30,3 +30,10 @@ Any static host works (Netlify, Cloudflare Pages, S3+CloudFront, OCI Object Stor
 - icon.svg, icon-192.png, icon-512.png — app icons
 
 Bump `CACHE` in sw.js (v1 → v2) whenever you change index.html so phones pick up the new version.
+
+## Fonts
+
+The dedication line is set in [Nunito Sans](https://github.com/Fonthausen/NunitoSans)
+(`nunito-sans-500.woff2`, latin subset), self-hosted so the app keeps its
+typography offline. Copyright 2016 The Nunito Sans Project Authors, licensed
+under the SIL Open Font License 1.1 — see `OFL.txt`.

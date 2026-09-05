@@ -1,5 +1,5 @@
-const CACHE = "insulin-dose-v8";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg", "./icon-192.png", "./icon-512.png", "./family-scene.jpg"];
+const CACHE = "insulin-dose-v9";
+const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg", "./icon-192.png", "./icon-512.png", "./family-scene.jpg", "./nunito-sans-500.woff2"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
